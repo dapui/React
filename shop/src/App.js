@@ -5,11 +5,14 @@ import './App.css';
 import data from './data.js';
 import Detail from './routes/Detail.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
+import axios from "axios";
 
 function App() {
 
-    let [shoes] = useState(data);
+    let [shoes, setShoes] = useState(data);
     let navigate = useNavigate();
+    let [count, setCount] = useState(2);
+    let [loading, setLoading] = useState(false);
 
     return (
         <div className="App">
@@ -23,6 +26,12 @@ function App() {
                     </Nav>
                 </Container>
             </Navbar>
+
+            {
+                loading == true
+                ? <div>loading...</div>
+                : null
+            }
 
             <Routes>
                 <Route path="/" element={
@@ -39,6 +48,65 @@ function App() {
                             }
                         </Row>
                     </Container>
+                    <button onClick={()=>{
+                        if (count == 4){
+                            alert('상품이 없습니다.');
+                            return;
+                        }
+
+                        setLoading(true);
+                        axios.get('https://codingapple1.github.io/shop/data'+count+'.json')
+                        .then((result)=>{
+                            let copy = [...shoes, ...result.data];
+                            setShoes(copy);
+                            setLoading(false);
+                            setCount(count + 1);
+                        })
+                        .catch(()=>{
+                            setLoading(false);
+                            console.log('요청 실패');
+                        })
+                        
+                        // post 요청
+                        // axios.get('/url', {name : 'kim'})
+                        //     .then((result)=>{
+                        //     console.log(result);
+                        //         console.log('요청 성공');
+                        // })
+                        // .catch(()=>{
+                        //     console.log('요청 실패');
+                        // })
+
+                        // 여러개를 동시에 요청하고 싶을 때
+                        // Promise.all([ axios.get('/url1'), axios.get('/url2') ])
+                        //     .then((result)=>{
+                        //         let copy = [...shoes, ...result.data];
+                        //         if (count == 4){
+                        //             alert('상품이 없습니다.');
+                        //         }
+                        //         setShoes(copy);
+                        //         setLoading(false);
+                        //         setCount(count + 1);
+                        //     })
+                        //     .catch(()=>{
+                        //         setLoading(false);
+                        //         console.log('요청 실패');
+                        //     })
+
+                        // fetch 사용의 경우
+                        // fetch('https://codingapple1.github.io/shop/data2.json')
+                        //     .then(result => result.json())
+                        //     .then(result => {
+                        //         let copy = [...shoes, ...result];
+                        //         setShoes(copy);
+                        //         setLoading(false);
+                        //     })
+                        //     .catch(()=>{
+                        //         setLoading(false);
+                        //         console.log('요청 실패');
+                        //     })
+
+                    }}>버튼</button>
                     </>
                 } />
                 <Route path="/datail/:id" element={<Detail shoes={shoes}/>} />
