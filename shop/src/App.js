@@ -41,7 +41,7 @@ function App() {
                     </Container>
                     </>
                 } />
-                <Route path="/datail" element={<Detail/>} />
+                <Route path="/datail/:id" element={<Detail shoes={shoes}/>} />
                 <Route path="/about" element={<About/>}>
                     <Route path="member" element={<div>멤버</div>} />
                     <Route path="location" element={<div>위치정보</div>} />
