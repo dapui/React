@@ -1,7 +1,9 @@
 import {useParams} from "react-router-dom";
 import styled from "styled-components";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import { Nav } from 'react-bootstrap';
+
+import { Context1 } from './../App.js';
 
 let YellowBtn = styled.button`
     background : ${ props => props.bg};
@@ -13,6 +15,8 @@ let NewBtn = styled(YellowBtn)`
 `
 
 function Detail(props) {
+    let {stock} = useContext(Context1);
+
     let {id} = useParams();
     let [count, setCount] = useState(0);
     let [discount, setDiscount] = useState(true);
@@ -96,6 +100,7 @@ function TabContent({tab}) {
     // }
 
     let [fade, setFade] = useState('');
+    let {stock} = useContext(Context1);
 
     useEffect(()=>{
         let a = setTimeout(()=>{ setFade('end') }, 100)
@@ -109,7 +114,7 @@ function TabContent({tab}) {
     return (
      //<div className={'start' + fade}>
      <div className={`start ${fade}`}>
-         { [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab] }
+         { [<div>{stock}</div>, <div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab] }
      </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {createContext, useState} from 'react';
 import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
 import getImg from './img/woman.jpg';
 import './App.css';
@@ -7,12 +7,15 @@ import Detail from './routes/Detail.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
 
+export let Context1 = createContext();
+
 function App() {
 
     let [shoes, setShoes] = useState(data);
     let navigate = useNavigate();
     let [count, setCount] = useState(2);
     let [loading, setLoading] = useState(false);
+    let [stock, setStock] = useState([10, 11, 12]);
 
     return (
         <div className="App">
@@ -109,7 +112,11 @@ function App() {
                     }}>버튼</button>
                     </>
                 } />
-                <Route path="/datail/:id" element={<Detail shoes={shoes}/>} />
+                <Route path="/datail/:id" element={
+                    <Context1.Provider value={{ stock }}>
+                        <Detail shoes={shoes}/>
+                    </Context1.Provider>
+                } />
                 <Route path="/about" element={<About/>}>
                     <Route path="member" element={<div>멤버</div>} />
                     <Route path="location" element={<div>위치정보</div>} />
