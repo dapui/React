@@ -18,8 +18,8 @@ function App() {
                     <Navbar.Brand href="#home">Dapui Shop</Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link onClick={()=>{ navigate('/') }}>Home</Nav.Link>
-                        <Nav.Link onClick={()=>{ navigate('/datail') }}>detail</Nav.Link>
                         <Nav.Link onClick={()=>{ navigate('/about') }}>about</Nav.Link>
+                        <Nav.Link onClick={()=>{ navigate('/event') }}>event</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
@@ -76,9 +76,11 @@ function About() {
 }
 
 function Card(props) {
+    let navigate = useNavigate();
+
     return (
         <Col>
-            <img src={'https://codingapple1.github.io/shop/shoes' + (props.i+1) + '.jpg'} width="80%"/>
+            <img src={'https://codingapple1.github.io/shop/shoes' + (props.i+1) + '.jpg'} width="80%" onClick={()=>{ navigate('/datail/' + props.i) }} shoes={props.shoes}/>
             <h4>{props.shoes.title}</h4>
             <p>{props.shoes.price}</p>
         </Col>
