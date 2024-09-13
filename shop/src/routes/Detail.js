@@ -2,6 +2,8 @@ import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {useContext, useEffect, useState} from "react";
 import { Nav } from 'react-bootstrap';
+import { addItem } from './../store.js';
+import { useDispatch } from 'react-redux';
 
 import { Context1 } from './../App.js';
 
@@ -23,6 +25,7 @@ function Detail(props) {
     let [num, setNum] = useState('');
     let [tab, setTab] = useState(0);
     let [fade2, setFade2] = useState('');
+    let dispatch = useDispatch();
 
     useEffect(() => {
         let a = setTimeout(()=>{setDiscount(false)}, 2000)
@@ -68,7 +71,9 @@ function Detail(props) {
                     <p>{findItem.content}</p>
                     <p>{findItem.price}원</p>
                     <input onChange={ (e) => { setNum(e.target.value) } } />
-                    <button className="btn btn-danger">주문하기</button>
+                    <button className="btn btn-danger" onClick={()=>{
+                        dispatch(addItem({id : findItem.id, name : findItem.title, count : 1}));
+                    }}>주문하기</button>
                 </div>
             </div>
 

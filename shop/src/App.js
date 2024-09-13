@@ -4,6 +4,7 @@ import getImg from './img/woman.jpg';
 import './App.css';
 import data from './data.js';
 import Detail from './routes/Detail.js';
+import Cart from './routes/Cart.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
 
@@ -26,6 +27,7 @@ function App() {
                         <Nav.Link onClick={()=>{ navigate('/') }}>Home</Nav.Link>
                         <Nav.Link onClick={()=>{ navigate('/about') }}>about</Nav.Link>
                         <Nav.Link onClick={()=>{ navigate('/event') }}>event</Nav.Link>
+                        <Nav.Link onClick={()=>{ navigate('/cart') }}>cart</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
@@ -45,7 +47,7 @@ function App() {
                             {
                                 shoes.map((data, i) => {
                                 return (
-                                <Card shoes={shoes[i]} i={i}/>
+                                <Card shoes={shoes[i]} i={i} key={i}/>
                             )
                             })
                             }
@@ -125,6 +127,7 @@ function App() {
                     <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
                     <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
                 </Route>
+                <Route path="/cart" element={<Cart/>} />
                 <Route path="*" element={<div>없는 페이지입니다</div>} />
             </Routes>
 
