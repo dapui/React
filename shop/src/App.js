@@ -7,7 +7,7 @@ import Detail from './routes/Detail.js';
 import Cart from './routes/Cart.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
-import {forEach} from "react-bootstrap/ElementChildren";
+import {useQuery} from "react-query";
 
 export let Context1 = createContext();
 
@@ -31,6 +31,16 @@ function App() {
         }
     }, [])
 
+    // react-query : 실시간 데이터 가져올 때 사용 (ex. sns, 코인 등)
+    let getUserName = useQuery('작명', ()=>
+        axios.get('https://codingapple1.github.io/userdata.json')
+            .then((a)=>{
+                console.log('요청됨');
+                return a.data
+            }),
+        {staleTime : 2000}  // refetch 간격 설정 (timer)
+    )
+
     return (
         <div className="App">
             <Navbar bg="dark" data-bs-theme="dark">
@@ -41,6 +51,12 @@ function App() {
                         <Nav.Link onClick={()=>{ navigate('/about') }}>about</Nav.Link>
                         <Nav.Link onClick={()=>{ navigate('/event') }}>event</Nav.Link>
                         <Nav.Link onClick={()=>{ navigate('/cart') }}>cart</Nav.Link>
+                    </Nav>
+                    <Nav className="ms-auto" style={{color : 'white'}}>
+                        {/*{ getUserName.isLoading ? 'Loding...' : getUserName.data.name }*/}
+                        { getUserName.isLoading && 'Loding...' }
+                        { getUserName.error && 'Error' }
+                        { getUserName.data && getUserName.data.name }
                     </Nav>
                 </Container>
             </Navbar>
