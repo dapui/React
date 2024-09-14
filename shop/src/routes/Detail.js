@@ -20,12 +20,23 @@ function Detail(props) {
     let {stock} = useContext(Context1);
 
     let {id} = useParams();
+    let findItem = props.shoes.find(x => x.id == id);
     let [count, setCount] = useState(0);
     let [discount, setDiscount] = useState(true);
     let [num, setNum] = useState('');
     let [tab, setTab] = useState(0);
     let [fade2, setFade2] = useState('');
     let dispatch = useDispatch();
+
+    // 최근 본 상품 localStorage에 추가
+    useEffect(() => {
+        let watchedList = localStorage.getItem('watched');
+        watchedList= JSON.parse(watchedList);
+        watchedList.push(findItem.id);
+        watchedList = new Set(watchedList);
+        watchedList = Array.from(watchedList);
+        localStorage.setItem('watched', JSON.stringify(watchedList));
+    }, [])
 
     useEffect(() => {
         let a = setTimeout(()=>{setDiscount(false)}, 2000)
@@ -43,10 +54,6 @@ function Detail(props) {
             alert('숫자를 입력하세요');
         }
     }, [num])
-
-    let findItem = props.shoes.find(function(x){
-        return x.id == id
-    });
 
     return (
         <div className={'container start ' + fade2}>

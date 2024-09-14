@@ -1,4 +1,4 @@
-import {createContext, useState} from 'react';
+import {createContext, useEffect, useState} from 'react';
 import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
 import getImg from './img/woman.jpg';
 import './App.css';
@@ -7,16 +7,29 @@ import Detail from './routes/Detail.js';
 import Cart from './routes/Cart.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
+import {forEach} from "react-bootstrap/ElementChildren";
 
 export let Context1 = createContext();
 
 function App() {
-
     let [shoes, setShoes] = useState(data);
     let navigate = useNavigate();
     let [count, setCount] = useState(2);
     let [loading, setLoading] = useState(false);
     let [stock, setStock] = useState([10, 11, 12]);
+
+    // localStorage
+    // let obj = {name : 'dapui'}
+    // localStorage.setItem('data', JSON.stringify(obj));
+    // let outObj = localStorage.getItem('data');
+    // console.log(JSON.parse(outObj).name);
+    useEffect(()=>{
+        let watchedList = localStorage.getItem('watched');
+        watchedList= JSON.parse(watchedList);
+        if (watchedList == '' || watchedList == null) {
+            localStorage.setItem('watched', JSON.stringify([]));
+        }
+    }, [])
 
     return (
         <div className="App">
@@ -33,9 +46,7 @@ function App() {
             </Navbar>
 
             {
-                loading == true
-                ? <div>loading...</div>
-                : null
+                loading == true ? <div>loading...</div> : null
             }
 
             <Routes>
@@ -44,13 +55,13 @@ function App() {
                     <div className="main-bg" style={{backgroundImage : 'url(' + getImg + ')'}}></div>
                     <Container>
                         <Row>
-                            {
-                                shoes.map((data, i) => {
+                        {
+                            shoes.map((data, i) => {
                                 return (
-                                <Card shoes={shoes[i]} i={i} key={i}/>
-                            )
+                                    <Card shoes={shoes[i]} i={i} key={i}/>
+                                )
                             })
-                            }
+                        }
                         </Row>
                     </Container>
                     <button onClick={()=>{
@@ -131,8 +142,25 @@ function App() {
                 <Route path="*" element={<div>없는 페이지입니다</div>} />
             </Routes>
 
+            <WatchedItem shoes={shoes}/>
         </div>
     );
+}
+
+function WatchedItem(shoes) {
+    let watchedList = localStorage.getItem('watched');
+    watchedList= JSON.parse(watchedList);
+
+    return (
+        <>
+            <p>최근에 본 상품</p>
+            {
+                watchedList.map((item, i) => (
+                    <div key={i}>{item}</div>
+                ))
+            }
+        </>
+    )
 }
 
 function Event() {
