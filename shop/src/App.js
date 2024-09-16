@@ -1,15 +1,18 @@
-import {createContext, useEffect, useState} from 'react';
+import {createContext, lazy, useEffect, useState, Suspense} from 'react';
 import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
 import getImg from './img/woman.jpg';
 import './App.css';
 import data from './data.js';
-import Detail from './routes/Detail.js';
-import Cart from './routes/Cart.js';
+// import Detail from './routes/Detail.js';
+// import Cart from './routes/Cart.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
 import {useQuery} from "react-query";
 
 export let Context1 = createContext();
+
+const Detail = lazy(() => import('./routes/Detail.js'));
+const Cart = lazy(() => import('./routes/Cart.js'));
 
 function App() {
     let [shoes, setShoes] = useState(data);
@@ -65,98 +68,100 @@ function App() {
                 loading == true ? <div>loading...</div> : null
             }
 
-            <Routes>
-                <Route path="/" element={
-                    <>
-                    <div className="main-bg" style={{backgroundImage : 'url(' + getImg + ')'}}></div>
-                    <Container>
-                        <Row>
-                        {
-                            shoes.map((data, i) => {
-                                return (
-                                    <Card shoes={shoes[i]} i={i} key={i}/>
-                                )
+            <Suspense fallback={<div>로딩중입니다</div>}>
+                <Routes>
+                    <Route path="/" element={
+                        <>
+                        <div className="main-bg" style={{backgroundImage : 'url(' + getImg + ')'}}></div>
+                        <Container>
+                            <Row>
+                            {
+                                shoes.map((data, i) => {
+                                    return (
+                                        <Card shoes={shoes[i]} i={i} key={i}/>
+                                    )
+                                })
+                            }
+                            </Row>
+                        </Container>
+                        <button onClick={()=>{
+                            if (count == 4){
+                                alert('상품이 없습니다.');
+                                return;
+                            }
+
+                            setLoading(true);
+                            axios.get('https://codingapple1.github.io/shop/data'+count+'.json')
+                            .then((result)=>{
+                                let copy = [...shoes, ...result.data];
+                                setShoes(copy);
+                                setLoading(false);
+                                setCount(count + 1);
                             })
-                        }
-                        </Row>
-                    </Container>
-                    <button onClick={()=>{
-                        if (count == 4){
-                            alert('상품이 없습니다.');
-                            return;
-                        }
+                            .catch(()=>{
+                                setLoading(false);
+                                console.log('요청 실패');
+                            })
 
-                        setLoading(true);
-                        axios.get('https://codingapple1.github.io/shop/data'+count+'.json')
-                        .then((result)=>{
-                            let copy = [...shoes, ...result.data];
-                            setShoes(copy);
-                            setLoading(false);
-                            setCount(count + 1);
-                        })
-                        .catch(()=>{
-                            setLoading(false);
-                            console.log('요청 실패');
-                        })
-                        
-                        // post 요청
-                        // axios.get('/url', {name : 'kim'})
-                        //     .then((result)=>{
-                        //     console.log(result);
-                        //         console.log('요청 성공');
-                        // })
-                        // .catch(()=>{
-                        //     console.log('요청 실패');
-                        // })
+                            // post 요청
+                            // axios.get('/url', {name : 'kim'})
+                            //     .then((result)=>{
+                            //     console.log(result);
+                            //         console.log('요청 성공');
+                            // })
+                            // .catch(()=>{
+                            //     console.log('요청 실패');
+                            // })
 
-                        // 여러개를 동시에 요청하고 싶을 때
-                        // Promise.all([ axios.get('/url1'), axios.get('/url2') ])
-                        //     .then((result)=>{
-                        //         let copy = [...shoes, ...result.data];
-                        //         if (count == 4){
-                        //             alert('상품이 없습니다.');
-                        //         }
-                        //         setShoes(copy);
-                        //         setLoading(false);
-                        //         setCount(count + 1);
-                        //     })
-                        //     .catch(()=>{
-                        //         setLoading(false);
-                        //         console.log('요청 실패');
-                        //     })
+                            // 여러개를 동시에 요청하고 싶을 때
+                            // Promise.all([ axios.get('/url1'), axios.get('/url2') ])
+                            //     .then((result)=>{
+                            //         let copy = [...shoes, ...result.data];
+                            //         if (count == 4){
+                            //             alert('상품이 없습니다.');
+                            //         }
+                            //         setShoes(copy);
+                            //         setLoading(false);
+                            //         setCount(count + 1);
+                            //     })
+                            //     .catch(()=>{
+                            //         setLoading(false);
+                            //         console.log('요청 실패');
+                            //     })
 
-                        // fetch 사용의 경우
-                        // fetch('https://codingapple1.github.io/shop/data2.json')
-                        //     .then(result => result.json())
-                        //     .then(result => {
-                        //         let copy = [...shoes, ...result];
-                        //         setShoes(copy);
-                        //         setLoading(false);
-                        //     })
-                        //     .catch(()=>{
-                        //         setLoading(false);
-                        //         console.log('요청 실패');
-                        //     })
+                            // fetch 사용의 경우
+                            // fetch('https://codingapple1.github.io/shop/data2.json')
+                            //     .then(result => result.json())
+                            //     .then(result => {
+                            //         let copy = [...shoes, ...result];
+                            //         setShoes(copy);
+                            //         setLoading(false);
+                            //     })
+                            //     .catch(()=>{
+                            //         setLoading(false);
+                            //         console.log('요청 실패');
+                            //     })
 
-                    }}>버튼</button>
-                    </>
-                } />
-                <Route path="/datail/:id" element={
-                    <Context1.Provider value={{ stock }}>
-                        <Detail shoes={shoes}/>
-                    </Context1.Provider>
-                } />
-                <Route path="/about" element={<About/>}>
-                    <Route path="member" element={<div>멤버</div>} />
-                    <Route path="location" element={<div>위치정보</div>} />
-                </Route>
-                <Route path="/event" element={<Event/>}>
-                    <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
-                    <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
-                </Route>
-                <Route path="/cart" element={<Cart/>} />
-                <Route path="*" element={<div>없는 페이지입니다</div>} />
-            </Routes>
+                        }}>버튼</button>
+                        </>
+                    } />
+                    <Route path="/datail/:id" element={
+                            <Context1.Provider value={{ stock }}>
+                                <Detail shoes={shoes}/>
+                            </Context1.Provider>
+                    } />
+                    <Route path="/about" element={<About/>}>
+                        <Route path="member" element={<div>멤버</div>} />
+                        <Route path="location" element={<div>위치정보</div>} />
+                    </Route>
+                    <Route path="/event" element={<Event/>}>
+                        <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
+                        <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
+                    </Route>
+                    <Route path="/cart" element={<Cart/>} />
+                    <Route path="*" element={<div>없는 페이지입니다</div>} />
+                </Routes>
+            </Suspense>
 
             <WatchedItem shoes={shoes}/>
         </div>
