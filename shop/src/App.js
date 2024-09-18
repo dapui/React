@@ -1,4 +1,4 @@
-import {createContext, lazy, useEffect, useState, Suspense} from 'react';
+import {createContext, lazy, useEffect, useState, Suspense, useTransition, useDeferredValue} from 'react';
 import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
 import getImg from './img/woman.jpg';
 import './App.css';
@@ -14,12 +14,17 @@ export let Context1 = createContext();
 const Detail = lazy(() => import('./routes/Detail.js'));
 const Cart = lazy(() => import('./routes/Cart.js'));
 
+let a = new Array(10000).fill(0);
+
 function App() {
     let [shoes, setShoes] = useState(data);
     let navigate = useNavigate();
     let [count, setCount] = useState(2);
     let [loading, setLoading] = useState(false);
     let [stock, setStock] = useState([10, 11, 12]);
+    let [name, setName] = useState('');
+    let [isPending, startTransition] = useTransition();
+    // let state = useDeferredValue(state);    // state에 넣은게 변동사항이 생기면 늦게 처리해줌 (느린 컴포넌트 성능향상가능)
 
     // localStorage
     // let obj = {name : 'dapui'}
@@ -46,6 +51,21 @@ function App() {
 
     return (
         <div className="App">
+            <input onChange={(e)=>{
+                startTransition(()=>{   // startTransition으로 문제(성능저하)의 state변경 감싸기 (startTransition: 늦게처리)
+                    setName(e.target.value)
+                })
+            }}/>
+            {
+                // isPending은 tartTransition 처리중일때 true
+                isPending ? '로딩중' :
+                a.map(()=>{
+                    // return <div>{state}</div>
+                    return <div>{name}</div>
+                })
+            }
+
+
             <Navbar bg="dark" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand href="#home">Dapui Shop</Navbar.Brand>
