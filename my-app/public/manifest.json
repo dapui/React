@@ -1,0 +1,26 @@
+{
+  "version" : "여러분앱의 버전.. 예를 들면 1.12 이런거",
+  "short_name" : "설치후 앱런처나 바탕화면에 표시할 짧은 12자 이름",
+  "name" : "기본이름",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url" : "앱아이콘 눌렀을 시 보여줄 메인페이지 경로",
+  "display" : "standalone 아니면 fullscreen",
+  "theme_color" : "상단 탭색상 등 원하는 테마색상",
+  "background_color" : "앱 처음 실행시 잠깐 뜨는 splashscreen의 배경색"
+}
