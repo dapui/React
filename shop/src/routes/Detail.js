@@ -4,6 +4,7 @@ import {useContext, useEffect, useState} from "react";
 import { Nav } from 'react-bootstrap';
 import { addItem } from './../store.js';
 import { useDispatch } from 'react-redux';
+import { useLike} from "../hooks/like.js";
 
 import { Context1 } from './../App.js';
 
@@ -17,8 +18,8 @@ let NewBtn = styled(YellowBtn)`
 `
 
 function Detail(props) {
-    let {stock} = useContext(Context1);
 
+    let {stock} = useContext(Context1);
     let {id} = useParams();
     let findItem = props.shoes.find(x => x.id == id);
     let [count, setCount] = useState(0);
@@ -27,6 +28,7 @@ function Detail(props) {
     let [tab, setTab] = useState(0);
     let [fade2, setFade2] = useState('');
     let dispatch = useDispatch();
+    let [like, addLike] = useLike();
 
     // 최근 본 상품 localStorage에 추가
     useEffect(() => {
@@ -68,6 +70,8 @@ function Detail(props) {
             <YellowBtn bg="orange">버튼</YellowBtn>
             <YellowBtn bg="blue">버튼</YellowBtn>
             <NewBtn bg="pink" onClick={()=>{setCount(count + 1)}}>{count}</NewBtn>
+
+            {like} <span onClick={()=>{ addLike() }}>❤</span>
 
             <div className="row">
                 <div className="col-md-6">
